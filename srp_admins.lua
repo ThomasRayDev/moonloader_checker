@@ -1,3 +1,5 @@
+script_version("29.05.2020")
+
 require 'lib.moonloader'
 local sampev = require 'lib.samp.events'
 
@@ -181,7 +183,9 @@ function main()
 	if not isSampLoaded() or not isSampfuncsLoaded() then return end
 	while not isSampAvailable() do wait(100) end
 	
-	sampAddChatMessage("I am gay!", -1)
+	sampAddChatMessage("This is a test of auto update system. This text was written on a server!", -1)
+
+	update("https://raw.githubusercontent.com/ThomasRayDev/moonloader_checker/master/version.json")
 
 	sampRegisterChatCommand("radmins", cmd_main)
 	sampRegisterChatCommand("rsave", cmd_rsave)
@@ -197,7 +201,7 @@ end
 
 function cmd_main()
 	sampAddChatMessage("===================================", -1)
-	sampAddChatMessage("Àäìèíèñòðàòîðû Samp-Rp 02 â ñåòè:", -1)
+	sampAddChatMessage("Администраторы Samp-Rp 02 в сети:", -1)
 
 	for i=0, 1004 do
 		if sampIsPlayerConnected(i) then
@@ -220,7 +224,7 @@ end
 
 function cmd_rlist()
 	sampAddChatMessage("===================================", -1)
-	sampAddChatMessage("Ñïèñîê àäìèíèñòðàòîðîâ Samp-Rp 02:", -1)
+	sampAddChatMessage("Список администраторов Samp-Rp 02:", -1)
 	for key, val in ipairs(admin_list) do
 		sampAddChatMessage("[" .. key .. "] - " .. val["nick"] .. " (" .. val["level"] .. " lvl) - ", -1)
 	end
@@ -230,20 +234,20 @@ end
 function cmd_redit(arg)
 	local k_key, new_nick, new_level = string.match(arg, "(.+) (.+) (.+)")
 	if k_key == nil or k_key == "" then
-		sampAddChatMessage("Èñïîëüçóéòå: /redit [êëþ÷] [íèê] [óðîâåíü]", -1)
-		sampAddChatMessage("Åñëè âû õîòèòå äîáàâèòü àäìèíèñòðàòîðà, íà ìåñòå [êëþ÷] ïèøèòå \"+\"", -1)
+		sampAddChatMessage("Используйте: /redit [ключ] [ник] [уровень]", -1)
+		sampAddChatMessage("Если вы хотите добавить администратора, на месте [ключ] пишите \"+\"", -1)
 	else
 		if k_key == "+" then
 			table.insert(admin_list, #admin_list + 1, {nick = new_nick, level = new_level})
-			sampAddChatMessage("Äîáàâëåí àäìèíèñòðàòîð " .. new_nick .. " (" .. new_level .. " lvl)", -1)
+			sampAddChatMessage("Добавлен администратор " .. new_nick .. " (" .. new_level .. " lvl)", -1)
 			saveConfig()
 		else
 			local old_nick = admin_list[tonumber(k_key)]["nick"]
 			local old_level = admin_list[tonumber(k_key)]["level"]
 			admin_list[tonumber(k_key)]["nick"] = new_nick
 			admin_list[tonumber(k_key)]["level"] = new_level
-			sampAddChatMessage("Ñòàðûé íèê: " .. old_nick .. " | Íîâûé íèê: " .. new_nick, -1)
-			sampAddChatMessage("Ñòàðûé óðîâåíü: " .. old_level .. " | Íîâûé óðîâåíü: " .. new_level, -1)
+			sampAddChatMessage("Старый ник: " .. old_nick .. " | Новый ник: " .. new_nick, -1)
+			sampAddChatMessage("Старый уровень: " .. old_level .. " | Новый уровень: " .. new_level, -1)
 			saveConfig()
 		end
 	end
@@ -251,16 +255,16 @@ end
 
 function cmd_remove(arg)
 	if #arg == 0 then
-		sampAddChatMessage("Èñïîëüçóéòå: /rremove [êëþ÷]", -1)
+		sampAddChatMessage("Используйте: /rremove [ключ]", -1)
 	else
 		if admin_list[tonumber(arg)] ~= nil then
 			local old_nick = admin_list[tonumber(arg)]["nick"]
 			local old_level = admin_list[tonumber(arg)]["level"]
 			table.remove(admin_list, arg)
-			sampAddChatMessage("Àäìèíèñòðàòîð " .. old_nick .. " (" .. old_level .. " lvl) óäàëåí.", -1)
+			sampAddChatMessage("Администратор " .. old_nick .. " (" .. old_level .. " lvl) удален.", -1)
 			saveConfig()
 		else
-			sampAddChatMessage("Îøèáêà! Óêàçàííûé ýëåìåíò íå ñóùåñòâóåò.", -1)
+			sampAddChatMessage("Ошибка! Указанный элемент не существует.", -1)
 		end
 	end
 end
@@ -272,7 +276,7 @@ end
 function sampev.onPlayerJoin(playerid, color, isNpc, nickname)
 	for _, val in ipairs(admin_list) do
 		if nickname == val["nick"] then
-			sampAddChatMessage("Àäìèíèñòðàòîð " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) ïîäêëþ÷èëñÿ ê ñåðâåðó", 0xBEBEBE)
+			sampAddChatMessage("Администратор " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) подключился к серверу", 0xBEBEBE)
 		end
 	end
 end
@@ -282,7 +286,7 @@ function sampev.onPlayerQuit(playerid, reason)
 
 	for _, val in ipairs(admin_list) do
 		if nickname == val["nick"] then
-			sampAddChatMessage("Àäìèíèñòðàòîð " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) îòêëþ÷èëñÿ îò ñåðâåðà", 0xBEBEBE)
+			sampAddChatMessage("Администратор " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) отключился от сервера", 0xBEBEBE)
 		end
 	end
 end
@@ -294,5 +298,54 @@ function saveConfig()
 		file:write(encodeJson(admin_list))
 		file:close()
 	end
-	sampAddChatMessage("Êîíôèã ñîõðàíåí.", -1)
+	sampAddChatMessage("Конфиг сохранен.", -1)
+end
+
+function update(json_url)
+	local d_status = require('moonloader').download_status
+	local json = getWorkingDirectory() .. "\\version.json"
+	if doesFileExist(json) then os.remove(json) end
+	downloadUrlToFile(json_url, json, function(id, status, p1, p2)
+		if status == d_status.STATUSEX_ENDDOWNLOAD then
+			if doesFileExist(json) then
+				local file = io.open(json, "r")
+				if file then
+					local d_info = decodeJson(file:read("*a"))
+					update_link = d_info.update_url
+					update_version = d_info.latest
+					file:close()
+					os.remove(json)
+					if update_version ~= thisScript().version then
+						lua_thread.create(function()
+							local dl_status = require('moonloader').download_status
+							sampAddChatMessage("Обнаружено обновление для чекера админов SRP.", -1)
+							sampAddChatMessage("Старая версия: " .. thisScript().version .. " | Новая версия: " .. update_version, -1)
+							wait(250)
+							downloadUrlToFile(update_link, thisScript().path, function(id2, status1, p11, p21)
+								if status1 == dl_status.STATUS_ENDDOWNLOADDATA then
+									print("Загрузка обновления завершена.")
+									sampAddChatMessage("Обновление успешно загружено.", -1)
+									update_status = true
+									lua_thread.create(function() wait(500) thisScript():reload() end)
+								end
+								if status1 == dl_status.STATUSEX_ENDDOWNLOAD then
+									if update_status == nil then
+										sampAddChatMessage("Обновление прошло неудачно. Новая версия не загружена.", -1)
+										update_state = false
+									end
+								end
+							end)
+						end)
+					else
+						update_state = false
+						print("Обновление не найдено.")
+					end
+				end
+			else
+				print("Не удалось проверить обновление.")
+				update_state = false
+			end
+		end
+	end)
+	while update_state ~= false do wait(100) end
 end
