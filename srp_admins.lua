@@ -180,6 +180,8 @@ function main()
 
 	if not isSampLoaded() or not isSampfuncsLoaded() then return end
 	while not isSampAvailable() do wait(100) end
+	
+	sampAddChatMessage("I am gay!", -1)
 
 	sampRegisterChatCommand("radmins", cmd_main)
 	sampRegisterChatCommand("rsave", cmd_rsave)
@@ -195,7 +197,7 @@ end
 
 function cmd_main()
 	sampAddChatMessage("===================================", -1)
-	sampAddChatMessage("Администраторы Samp-Rp 02 в сети:", -1)
+	sampAddChatMessage("ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°Г» Samp-Rp 02 Гў Г±ГҐГІГЁ:", -1)
 
 	for i=0, 1004 do
 		if sampIsPlayerConnected(i) then
@@ -218,7 +220,7 @@ end
 
 function cmd_rlist()
 	sampAddChatMessage("===================================", -1)
-	sampAddChatMessage("Список администраторов Samp-Rp 02:", -1)
+	sampAddChatMessage("Г‘ГЇГЁГ±Г®ГЄ Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°Г®Гў Samp-Rp 02:", -1)
 	for key, val in ipairs(admin_list) do
 		sampAddChatMessage("[" .. key .. "] - " .. val["nick"] .. " (" .. val["level"] .. " lvl) - ", -1)
 	end
@@ -228,20 +230,20 @@ end
 function cmd_redit(arg)
 	local k_key, new_nick, new_level = string.match(arg, "(.+) (.+) (.+)")
 	if k_key == nil or k_key == "" then
-		sampAddChatMessage("Используйте: /redit [ключ] [ник] [уровень]", -1)
-		sampAddChatMessage("Если вы хотите добавить администратора, на месте [ключ] пишите \"+\"", -1)
+		sampAddChatMessage("Г€Г±ГЇГ®Г«ГјГ§ГіГ©ГІГҐ: /redit [ГЄГ«ГѕГ·] [Г­ГЁГЄ] [ГіГ°Г®ГўГҐГ­Гј]", -1)
+		sampAddChatMessage("Г…Г±Г«ГЁ ГўГ» ГµГ®ГІГЁГІГҐ Г¤Г®ГЎГ ГўГЁГІГј Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°Г , Г­Г  Г¬ГҐГ±ГІГҐ [ГЄГ«ГѕГ·] ГЇГЁГёГЁГІГҐ \"+\"", -1)
 	else
 		if k_key == "+" then
 			table.insert(admin_list, #admin_list + 1, {nick = new_nick, level = new_level})
-			sampAddChatMessage("Добавлен администратор " .. new_nick .. " (" .. new_level .. " lvl)", -1)
+			sampAddChatMessage("Г„Г®ГЎГ ГўГ«ГҐГ­ Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° " .. new_nick .. " (" .. new_level .. " lvl)", -1)
 			saveConfig()
 		else
 			local old_nick = admin_list[tonumber(k_key)]["nick"]
 			local old_level = admin_list[tonumber(k_key)]["level"]
 			admin_list[tonumber(k_key)]["nick"] = new_nick
 			admin_list[tonumber(k_key)]["level"] = new_level
-			sampAddChatMessage("Старый ник: " .. old_nick .. " | Новый ник: " .. new_nick, -1)
-			sampAddChatMessage("Старый уровень: " .. old_level .. " | Новый уровень: " .. new_level, -1)
+			sampAddChatMessage("Г‘ГІГ Г°Г»Г© Г­ГЁГЄ: " .. old_nick .. " | ГЌГ®ГўГ»Г© Г­ГЁГЄ: " .. new_nick, -1)
+			sampAddChatMessage("Г‘ГІГ Г°Г»Г© ГіГ°Г®ГўГҐГ­Гј: " .. old_level .. " | ГЌГ®ГўГ»Г© ГіГ°Г®ГўГҐГ­Гј: " .. new_level, -1)
 			saveConfig()
 		end
 	end
@@ -249,16 +251,16 @@ end
 
 function cmd_remove(arg)
 	if #arg == 0 then
-		sampAddChatMessage("Используйте: /rremove [ключ]", -1)
+		sampAddChatMessage("Г€Г±ГЇГ®Г«ГјГ§ГіГ©ГІГҐ: /rremove [ГЄГ«ГѕГ·]", -1)
 	else
 		if admin_list[tonumber(arg)] ~= nil then
 			local old_nick = admin_list[tonumber(arg)]["nick"]
 			local old_level = admin_list[tonumber(arg)]["level"]
 			table.remove(admin_list, arg)
-			sampAddChatMessage("Администратор " .. old_nick .. " (" .. old_level .. " lvl) удален.", -1)
+			sampAddChatMessage("ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° " .. old_nick .. " (" .. old_level .. " lvl) ГіГ¤Г Г«ГҐГ­.", -1)
 			saveConfig()
 		else
-			sampAddChatMessage("Ошибка! Указанный элемент не существует.", -1)
+			sampAddChatMessage("ГЋГёГЁГЎГЄГ ! Г“ГЄГ Г§Г Г­Г­Г»Г© ГЅГ«ГҐГ¬ГҐГ­ГІ Г­ГҐ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ.", -1)
 		end
 	end
 end
@@ -270,7 +272,7 @@ end
 function sampev.onPlayerJoin(playerid, color, isNpc, nickname)
 	for _, val in ipairs(admin_list) do
 		if nickname == val["nick"] then
-			sampAddChatMessage("Администратор " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) подключился к серверу", 0xBEBEBE)
+			sampAddChatMessage("ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) ГЇГ®Г¤ГЄГ«ГѕГ·ГЁГ«Г±Гї ГЄ Г±ГҐГ°ГўГҐГ°Гі", 0xBEBEBE)
 		end
 	end
 end
@@ -280,7 +282,7 @@ function sampev.onPlayerQuit(playerid, reason)
 
 	for _, val in ipairs(admin_list) do
 		if nickname == val["nick"] then
-			sampAddChatMessage("Администратор " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) отключился от сервера", 0xBEBEBE)
+			sampAddChatMessage("ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г° " .. nickname .. "[" .. playerid .. "] (" .. val["level"] .. " lvl) Г®ГІГЄГ«ГѕГ·ГЁГ«Г±Гї Г®ГІ Г±ГҐГ°ГўГҐГ°Г ", 0xBEBEBE)
 		end
 	end
 end
@@ -292,5 +294,5 @@ function saveConfig()
 		file:write(encodeJson(admin_list))
 		file:close()
 	end
-	sampAddChatMessage("Конфиг сохранен.", -1)
+	sampAddChatMessage("ГЉГ®Г­ГґГЁГЈ Г±Г®ГµГ°Г Г­ГҐГ­.", -1)
 end
